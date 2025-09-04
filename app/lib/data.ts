@@ -1,5 +1,6 @@
 import postgres from 'postgres';
 import {
+  CountResult,
   CustomerField,
   CustomersTableType,
   InvoiceForm,
@@ -186,9 +187,9 @@ export async function fetchCustomers() {
   }
 }
 
-export async function fetchTotalCustomers() {
+export async function fetchTotalCustomers(): Promise<number> {
   try {
-    const customers = await sql<CustomerField[]>`
+    const customers = await sql<CountResult[]>`
         SELECT COUNT(*)
         FROM customers
     `;
@@ -241,7 +242,7 @@ export async function fetchTotalPaidInvoices() {
     // console.log('Fetching revenue data...');
     await new Promise((resolve) => setTimeout(resolve, 400));
 
-    const data = await sql<InvoicesTable[]>`SELECT COUNT(*) FROM invoices WHERE status = 'paid'`;
+    const data = await sql<CountResult[]>`SELECT COUNT(*) FROM invoices WHERE status = 'paid'`;
 
     // console.log('Data fetch completed after 3 seconds.');
 
@@ -260,7 +261,7 @@ export async function fetchTotalPendingInvoices() {
     // console.log('Fetching revenue data...');
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const data = await sql<InvoicesTable[]>`SELECT COUNT(*) FROM invoices WHERE status = 'pending'`;
+    const data = await sql<CountResult[]>`SELECT COUNT(*) FROM invoices WHERE status = 'pending'`;
 
     // console.log('Data fetch completed after 3 seconds.');
 
@@ -279,7 +280,7 @@ export async function fetchTotalInvoices() {
     // console.log('Fetching revenue data...');
     await new Promise((resolve) => setTimeout(resolve, 900));
 
-    const data = await sql<InvoicesTable[]>`SELECT COUNT(*) FROM invoices`;
+    const data = await sql<CountResult[]>`SELECT COUNT(*) FROM invoices`;
 
     // console.log('Data fetch completed after 3 seconds.');
 
