@@ -2,19 +2,15 @@ import React, {Suspense} from "react";
 import {lusitana} from "@/app/ui/fonts";
 import RevenueChart from "@/app/ui/dashboard/revenue-chart";
 import LatestInvoices from "@/app/ui/dashboard/latest-invoices";
-import {LatestInvoicesSkeleton, RevenueChartSkeleton} from "@/app/ui/skeletons";
+import {CardSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton} from "@/app/ui/skeletons";
 import {Card} from "@/app/ui/dashboard/cards";
 import {
     fetchTotalPaidInvoices,
     fetchTotalPendingInvoices,
-    fetchTotalCustomers
+    fetchTotalCustomers, fetchTotalInvoices
 } from "@/app/lib/data";
 
 export default async function DashboardPage() {
-    const totalPaidInvoices = Number(await fetchTotalPaidInvoices());
-    const totalPendingInvoices = Number(await fetchTotalPendingInvoices());
-    const numberOfInvoices = totalPaidInvoices + totalPendingInvoices;
-    const numberOfCustomers = Number(await fetchTotalCustomers());
 
     return (
         <main>
@@ -22,14 +18,22 @@ export default async function DashboardPage() {
                 Dashboard
             </h1>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <Card title="Collected" value={totalPaidInvoices} type="collected"/>
-                <Card title="Pending" value={totalPendingInvoices} type="pending"/>
-                <Card title="Total Invoices" value={numberOfInvoices} type="invoices"/>
-                <Card
-                    title="Total Customers"
-                    value={numberOfCustomers}
-                    type="customers"
-                />
+                <Suspense fallback={<CardSkeleton/>}>
+                    <Card title="Collected" fetchFunction={fetchTotalPaidInvoices} type="collected"/>
+                </Suspense>
+                <Suspense fallback={<CardSkeleton/>}>
+                    <Card title="Pending" fetchFunction={fetchTotalPendingInvoices} type="pending"/>
+                </Suspense>
+                <Suspense fallback={<CardSkeleton/>}>
+                    <Card title="Total Invoices" fetchFunction={fetchTotalInvoices} type="invoices"/>
+                </Suspense>
+                <Suspense fallback={<CardSkeleton/>}>
+                    <Card
+                        title="Total Customers"
+                        fetchFunction={fetchTotalCustomers}
+                        type="customers"
+                    />
+                </Suspense>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
                 <Suspense fallback={<RevenueChartSkeleton/>}>
