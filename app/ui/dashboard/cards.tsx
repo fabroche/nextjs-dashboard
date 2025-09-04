@@ -30,16 +30,18 @@ export default async function CardWrapper() {
   );
 }
 
-export function Card({
+export async function Card({
   title,
-  value,
+  fetchFunction,
   type,
 }: {
   title: string;
-  value: number | string;
+  fetchFunction: () => Promise<any>;
   type: 'invoices' | 'customers' | 'pending' | 'collected';
 }) {
   const Icon = iconMap[type];
+
+  const value = await fetchFunction();
 
   return (
     <div className="rounded-xl bg-gray-50 p-2 shadow-sm">
